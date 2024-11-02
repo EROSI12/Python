@@ -1,0 +1,2 @@
+name="erosi"
+print(name)
