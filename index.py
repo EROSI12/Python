@@ -31,3 +31,20 @@ contact_info ["Eros"]= "323-12312"
 
 print(contact_info)
 
+keys = contact_info.keys()
+
+print(keys)
+
+values = contact_info.values()
+print(values)
+
+items = contact_info.items()
+
+print(items)
+
+
+
+
+
+
+
