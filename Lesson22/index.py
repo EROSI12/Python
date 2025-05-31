@@ -1,38 +1,35 @@
-
-class Student:
-    def __init__(self, name, age):
-        self.name = name
-        self.age = age
-
-    def get_name(self):
-        return self.name
-
-    def get_age(self):
-        return self.age
-
-student1 = Student(name="Drin", age=17)
-print("Name:", student1.get_name())
-print("Age:", student1.get_age())
-
-student2 = Student(name="Eros", age=18)
-print("Name:", student2.get_name())
-print("Age:", student2.get_age())
+from pydantic import BaseModel, conint, constr
+from typing_extensions import Optional
 
 
-class Animal:
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
+class User(BaseModel):
+    id: int
+    name: str
+    age: int
+    email: str
 
-    def get(self, attribute):
-        return getattr(self, attribute, None)
+user = User(id=1, name='John', age="23", email='john@example.com')
 
-    def set(self, attribute, value):
-        setattr(self, attribute, value)
+print(user)
 
-class Dog(Animal):
-    def __init__(self, name, breed, age):
-        super().__init__(name=name, breed=breed, age=age)
+class User(BaseModel):
+    id: int
+    name: str
+    age: Optional[int] = None
+    email: Optional[str] = None
 
-    def bark(self):
-        return f"{self.get('name')} says woof!"
+user2 = User(id=1, name= 'John', age=25)
+
+user3 = User(id=1, name= 'John', email='john@example.com')
+
+print(user3)
+
+class another_user(BaseModel):
+    id: conint(gt=0)
+    name: constr(min_length=2, max_length=50)
+
+valid_user = another_user(id=1, name='John')
+print(valid_user)
+
+valid_user1 = another_user(id=0, name='John')
+print(valid_user )
