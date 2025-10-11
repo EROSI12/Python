@@ -3,6 +3,8 @@ from typing import List
 from models.recipe import Recipe, RecipeCreate
 from database import get_db_connection
 
+from Lesson22.client import responses
+
 router = APIRouter()
 
 def category_exists(category_id: int) -> bool:
@@ -76,21 +78,36 @@ def create_recipe(recipe: RecipeCreate):
 def update_recipe(recipe_id: int, recipe: RecipeCreate):
     if recipe.category_id and not category_exists(recipe.category_id):
         raise HTTPException(status_code=400, detail="Category does not exist")
-
     conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute(
-        "UPDATE recipe SET title = ?, description = ?, category_id = ? WHERE id = ?",
-        (recipe.title, recipe.description, recipe.category_id, recipe_id)
+        "UPDATE recipe SET title = ?, description = ?, category_id = ? WHERE id = ? ingredients=? , instructions=?, cuisine=?, difficulty=?,    ",
+        (recipe.name, recipe.diescription, recipe.ingredients, recipe.instrutions, recipe.cuisine, recipe.difficulty,
+         recipe.category_id)
     )
     if cursor.rowcount == 0:
         conn.close()
         raise HTTPException(status_code=404, detail="Recipe not found")
-
     conn.commit()
     conn.close()
     return Recipe(id=recipe_id, **recipe.dict())
+
+@routers.post("/recipes/", responses_model=dict)
+def create_recipes(recipe: RecipeCreate):
+    if not category_exists(recipe.category_id):
+        raise  HTTPException(status_code=400, detail="Category does not exits")
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "INSERT INTO recipes (name, description, ingredients, instructions, cuisine ,difficulty, category_id) VALUES (?,?,?,?,?,?,?)",(recipe.name, recipe.diescription, recipe.ingredients, recipe.instrutions, recipe.cuisine, recipe.difficulty, recipe.category_id)
+    )
+
+    conn.commit()
+    recipe_id= cursor.lastrowid
+    conn.close()
+    return Recipe(id=recipe_id, name=recipe_name, description=recipe_description, ingredients=recipe.ingredients, instrutions=recipe.instrutions, cuisine=recipe.cuisine, difficulty=recipe.difficulty, category_id=recipe.category_id)
+
 
 @router.delete("/recipes/{recipe_id}", response_model=dict)
 def delete_recipe(recipe_id: int):
