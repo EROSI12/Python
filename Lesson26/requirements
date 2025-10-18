@@ -1,7 +1,7 @@
-fastapi
-uvicorn
-pydantic
-python-dotenv
-request
-streamlit
-pandas
+fastapi==0.115.0
+uvicorn==0.31.0
+pydantic==2.9.2
+python-dotenv==1.0.1
+requests==2.32.3
+streamlit==1.39.0
+pandas==2.2.3
