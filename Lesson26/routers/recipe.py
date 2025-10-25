@@ -3,7 +3,6 @@ from typing import List
 from models.recipe import Recipe, RecipeCreate
 from database import get_db_connection
 
-from Lesson22.client import responses
 
 router = APIRouter()
 
@@ -93,7 +92,7 @@ def update_recipe(recipe_id: int, recipe: RecipeCreate):
     conn.close()
     return Recipe(id=recipe_id, **recipe.dict())
 
-@routers.post("/recipes/", responses_model=dict)
+@router.post("/recipes/", response_model=dict)
 def create_recipes(recipe: RecipeCreate):
     if not category_exists(recipe.category_id):
         raise  HTTPException(status_code=400, detail="Category does not exits")
@@ -106,7 +105,8 @@ def create_recipes(recipe: RecipeCreate):
     conn.commit()
     recipe_id= cursor.lastrowid
     conn.close()
-    return Recipe(id=recipe_id, name=recipe_name, description=recipe_description, ingredients=recipe.ingredients, instrutions=recipe.instrutions, cuisine=recipe.cuisine, difficulty=recipe.difficulty, category_id=recipe.category_id)
+    return Recipe(id=recipe_id, name=recipe_name, description=recipe_description, ingredients=recipe.ingredients,
+                  instrutions=recipe.instrutions, cuisine=recipe.cuisine, difficulty=recipe.difficulty, category_id=recipe.category_id)
 
 
 @router.delete("/recipes/{recipe_id}", response_model=dict)

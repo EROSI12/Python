@@ -1,4 +1,4 @@
-from fasapi import FastApi
+from fastapi import FastAPI
 from routers import recipe, category
 import os
 from dotenv import load_dotenv
@@ -10,12 +10,12 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 app = FastAPI()
 
-app.incloude_router(category.router)
-app.incloude_router(recipe.router)
+app.include_router(category.router)
+app.include_router(recipe.router)
 
 @app.on_event("startup")
 def startup():
-    conn - get_db_connection()
+    conn = get_db_connection()
     cursor = conn.cursor()
 
     cursor.execute('''
